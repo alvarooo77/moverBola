@@ -1,0 +1,12 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Launch App",
+            "request": "launch",
+            "mainClass": "App",
+            "vmArgs": "--module-path C:\\Users\\Daniel\\Desktop\\javafx-sdk-23\\lib --add-modules javafx.controls,javafx.fxml"
+        }
+    ]
+}
