@@ -9,57 +9,44 @@ import javafx.fxml.Initializable;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import modelo.Bola;
 
 public class Controlador implements Initializable {
     @FXML
     Pane panel;
     @FXML
     Circle bolaAzul;
-
-    @FXML
-    Circle bolaRoja;
+    Bola miBola;
 
     AnimationTimer timer;
-    int sentidoAzul;
-    int sentidoRojo;
-    boolean pararTodo, pararRojo, pararAzul;
+    boolean pararTodo, pararAzul;
 
     public Controlador() {
 
-        sentidoAzul = 1;
-        sentidoRojo = -1;
-        pararTodo = false;
         pararAzul = false;
-        pararRojo = false;
         timer = new AnimationTimer() {
-            @Override
-            public void handle(long now) {
-                if (!pararTodo) {
-                    if (!pararAzul) {
-                        if ((bolaAzul.getLayoutX() + sentidoAzul + 10) >= 800) {
-                            sentidoAzul = sentidoAzul * -1;
-                        } else if ((bolaAzul.getLayoutX() + sentidoAzul - 10) <= 0) {
-                            sentidoAzul = sentidoAzul * -1;
-                        }
-                        bolaAzul.setLayoutX(bolaAzul.getLayoutX() + sentidoAzul);
-                    } else {
-                        sentidoAzul = 0;
-                    }
-                    if (!pararRojo) {
-                        if ((bolaRoja.getLayoutX() + sentidoRojo + 10) >= 800) {
-                            sentidoRojo = sentidoRojo * -1;
-                        } else if ((bolaRoja.getLayoutX() + sentidoRojo - 10) <= 0) {
-                            sentidoRojo = sentidoRojo * -1;
-                        }
-                        bolaRoja.setLayoutX(bolaRoja.getLayoutX() + sentidoRojo);
-                    } else {
-                        sentidoRojo = 0;
-                    }
-                } else {
-                    sentidoRojo = 0;
-                    sentidoAzul = 0;
+        @Override
+        public void handle(long now) {
+            if (!pararAzul) {
+                if (((miBola.getBola().getLayoutX() + miBola.getSentidoX() + 10) >= 800) || ((miBola.getBola().getLayoutX() + miBola.getSentidoX() - 10) <= 0)) {
+                    pararAzul=true;
                 }
+                miBola.getBola().setLayoutX(miBola.getBola().getLayoutX()+miBola.getSentidoX());
+            } else {
+                miBola.getBola().setFill(Color.RED);
+                timer.stop(); //game over
+            }
+            if (!pararAzul) {
+                if (((miBola.getBola().getLayoutY() + miBola.getSentidoY() + 10) >= 800) || ((miBola.getBola().getLayoutY() + miBola.getSentidoY() - 10) <= 0)) {
+                    pararAzul=true;
+                }
+                miBola.getBola().setLayoutY(miBola.getBola().getLayoutY()+miBola.getSentidoY());
+            } else {
+                timer.stop(); //game over
+            }
+           
             }
 
         };
@@ -69,42 +56,31 @@ public class Controlador implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         panel.setFocusTraversable(true);
         timer.start();
+        miBola = new Bola(bolaAzul);
 
     }
 
     public void teclaPulsada(KeyEvent tecla) {
         KeyCode code = tecla.getCode();
         switch (code) {
-            case R:
-                if (pararRojo == true) {
-                    sentidoRojo = 1;
-                    pararRojo = false;
-                } else {
-                    pararRojo = true;
-                }
+            case UP:
+                miBola.setSentidoX(0);
+                miBola.setSentidoY(-1);
                 break;
-            case A:
-                if (pararAzul == true) {
-                    sentidoAzul = 1;
-                    pararAzul = false;
-                } else {
-                    pararAzul = true;
-                }
+            case DOWN:
+                miBola.setSentidoX(0);
+                miBola.setSentidoY(+1);
                 break;
-            case T:
-                pararTodo = true;
+            case RIGHT:
+                miBola.setSentidoX(+1);
+                miBola.setSentidoY(0);
                 break;
-            case E:
-                pararTodo = false;
-                pararAzul = false;
-                pararRojo = false;
-                sentidoAzul = 1;
-                sentidoRojo = -1;
+            case LEFT:
+                miBola.setSentidoX(-1);
+                miBola.setSentidoY(0);
                 break;
             default:
-
                 break;
         }
-
     }
 }
